@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; }
+        body { margin: 0; overflow: hidden; background-color: white; }
         canvas { display: block; }
     </style>
 </head>
@@ -15,28 +15,31 @@
     <script>
         let scene = new THREE.Scene();
         let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-        let renderer = new THREE.WebGLRenderer({ antialias: true });
+        let renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
         let loader = new THREE.OBJLoader();
-        loader.load('siluetforpayhipbg.obj', function (object) {
+        loader.load('./siluetforpayhipbg.obj', function (object) { // путь к файлу
             object.traverse(function (child) {
                 if (child instanceof THREE.Mesh) {
-                    child.material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+                    child.material = new THREE.MeshBasicMaterial({ color: 0x000000 }); // черный цвет
                 }
             });
-            object.position.set(0, -10, -20);
+
+            object.position.set(0, -5, -20); // подкорректировал позицию
             scene.add(object);
 
+            let scrollAmount = 0;
+
             window.addEventListener("scroll", function () {
-                let scrollY = window.scrollY * 0.01;
-                object.rotation.y = scrollY * 2;
-                object.position.y = -10 + scrollY * 5;
+                scrollAmount = window.scrollY * 0.005; // более плавное движение
             });
 
             function animate() {
                 requestAnimationFrame(animate);
+                object.rotation.y = scrollAmount * 3; // вращение вокруг оси Y
+                object.position.y = -5 + scrollAmount * 3; // движение вверх
                 renderer.render(scene, camera);
             }
             animate();
