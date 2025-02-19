@@ -4,7 +4,7 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
 
 <script>
-    // создание сцены и рендерера
+    // создаем сцену и рендерер
     let scene = new THREE.Scene();
     let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     let renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -13,57 +13,57 @@
     renderer.shadowMap.enabled = true; // включаем тени
     document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-    // настройка камеры
-    camera.position.z = 8; // чуть дальше для лучшей перспективы
+    // настраиваем камеру
+    camera.position.z = 6; // ближе к модели
 
-    // освещение
-    let light = new THREE.DirectionalLight(0xffffff, 1.5);
-    light.position.set(2, 3, 5);
-    light.castShadow = true;
-    scene.add(light);
+    // освещение для реалистичного эффекта
+    let directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    directionalLight.position.set(3, 5, 10);
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
 
-    let ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // добавляем рассеянный свет
+    let ambientLight = new THREE.AmbientLight(0xffffff, 0.7); // мягкий рассеянный свет
     scene.add(ambientLight);
 
-    // загрузка модели
+    // загружаем 3D-модель
     let loader = new THREE.OBJLoader();
     loader.load(
-        'https://3dscrollblman.vercel.app/siluetforpayhipbg.obj', // твоя 3D-модель
+        'https://3dscrollblman.vercel.app/siluetforpayhipbg.obj?v=3', // убираем кэш
         function (object) {
             object.traverse(function (child) {
                 if (child instanceof THREE.Mesh) {
                     child.material = new THREE.MeshStandardMaterial({
                         color: 0x000000,
-                        roughness: 0.3, // чтобы не выглядела пластиковой
-                        metalness: 0.1,
+                        roughness: 0.1, // делает материал более гладким
+                        metalness: 0.2,
                     });
                     child.castShadow = true;
                     child.receiveShadow = true;
                 }
             });
 
-            object.scale.set(4, 4, 4); // увеличил размер модели
-            object.position.set(0, -2, -15); // глубже и ниже
+            object.scale.set(10, 10, 10); // увеличиваем модель
+            object.position.set(0, -3, -20); // углубляем и центрируем
             scene.add(object);
 
-            // анимация
+            // анимация - вращение модели при скролле
             function animate() {
                 requestAnimationFrame(animate);
-                object.rotation.y = window.scrollY * 0.005; // плавное вращение вправо
+                object.rotation.y = -window.scrollY * 0.002; // плавный поворот вправо
                 renderer.render(scene, camera);
             }
             animate();
         }
     );
 
-    // адаптация к размеру окна
+    // адаптация к изменению окна
     window.addEventListener('resize', function () {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // стилизация, чтобы 3D модель была на фоне
+    // стили, чтобы 3D-модель была фоном
     let styles = document.createElement('style');
     styles.innerHTML = `
         #canvas-container {
@@ -72,7 +72,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* фон */
+            z-index: -1; /* уходит в фон */
         }
     `;
     document.head.appendChild(styles);
