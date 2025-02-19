@@ -3,43 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Scroll</title>
+    <title>3D Scroll Background</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background-color: white; }
-        canvas { display: block; }
+        body { 
+            margin: 0; 
+            overflow-x: hidden; 
+            background-color: white; 
+            font-family: Arial, sans-serif; 
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; /* отправляем 3D-модель в фон */
+        }
+
+        .content {
+            position: relative;
+            z-index: 1; /* контент поверх модели */
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .product {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
+
+    <div id="canvas-container"></div>
+
+    <div class="content">
+        <h1>My Products</h1>
+        <div class="product">Drum Kit 1</div>
+        <div class="product">Drum Kit 2</div>
+        <div class="product">Drum Kit 3</div>
+        <div class="product">Drum Kit 4</div>
+    </div>
+
     <script>
         let scene = new THREE.Scene();
         let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
         let renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
 
         let loader = new THREE.OBJLoader();
-        loader.load('./siluetforpayhipbg.obj', function (object) { // путь к файлу
+        loader.load('./siluetforpayhipbg.obj', function (object) {
             object.traverse(function (child) {
                 if (child instanceof THREE.Mesh) {
-                    child.material = new THREE.MeshBasicMaterial({ color: 0x000000 }); // черный цвет
+                    child.material = new THREE.MeshBasicMaterial({ color: 0x000000 });
                 }
             });
 
-            object.position.set(0, -5, -20); // подкорректировал позицию
+            object.scale.set(10, 10, 10); // увеличил модель
+            object.position.set(0, 0, -30);
             scene.add(object);
 
             let scrollAmount = 0;
-
             window.addEventListener("scroll", function () {
-                scrollAmount = window.scrollY * 0.005; // более плавное движение
+                scrollAmount = window.scrollY * 0.005;
             });
 
             function animate() {
                 requestAnimationFrame(animate);
-                object.rotation.y = scrollAmount * 3; // вращение вокруг оси Y
-                object.position.y = -5 + scrollAmount * 3; // движение вверх
+                object.rotation.y = scrollAmount * 3;
+                object.position.y = -5 + scrollAmount * 3;
                 renderer.render(scene, camera);
             }
             animate();
@@ -51,5 +91,6 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
+
 </body>
 </html>
