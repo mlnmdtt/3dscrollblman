@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let loader = new THREE.OBJLoader();
     loader.load("https://3dscrollblman.vercel.app/siluetforpayhipbg.obj", function (object) {
-        object.scale.set(10, 10, 10);
+        object.scale.set(8, 8, 8);
         object.position.set(0, -2, -10);
         scene.add(object);
 
