@@ -1,79 +1,30 @@
-<div id="canvas-container"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
-
-<script>
-    // создаем сцену и рендерер
-    let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    let renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true; // включаем тени
-    document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-    // настраиваем камеру
-    camera.position.z = 6; // ближе к модели
-
-    // освещение для реалистичного эффекта
-    let directionalLight = new THREE.DirectionalLight(0xffffff, 2);
-    directionalLight.position.set(3, 5, 10);
-    directionalLight.castShadow = true;
-    scene.add(directionalLight);
-
-    let ambientLight = new THREE.AmbientLight(0xffffff, 0.7); // мягкий рассеянный свет
-    scene.add(ambientLight);
-
-    // загружаем 3D-модель
-    let loader = new THREE.OBJLoader();
-    loader.load(
-        'https://3dscrollblman.vercel.app/siluetforpayhipbg.obj?v=3', // убираем кэш
-        function (object) {
-            object.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.material = new THREE.MeshStandardMaterial({
-                        color: 0x000000,
-                        roughness: 0.1, // делает материал более гладким
-                        metalness: 0.2,
-                    });
-                    child.castShadow = true;
-                    child.receiveShadow = true;
-                }
-            });
-
-            object.scale.set(10, 10, 10); // увеличиваем модель
-            object.position.set(0, -3, -20); // углубляем и центрируем
-            scene.add(object);
-
-            // анимация - вращение модели при скролле
-            function animate() {
-                requestAnimationFrame(animate);
-                object.rotation.y = -window.scrollY * 0.002; // плавный поворот вправо
-                renderer.render(scene, camera);
-            }
-            animate();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black; /* фон черный */
         }
-    );
-
-    // адаптация к изменению окна
-    window.addEventListener('resize', function () {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // стили, чтобы 3D-модель была фоном
-    let styles = document.createElement('style');
-    styles.innerHTML = `
         #canvas-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* уходит в фон */
+            z-index: -1; /* фон */
         }
-    `;
-    document.head.appendChild(styles);
-</script>
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="./script.js" defer></script> 
+</body>
+</html>
