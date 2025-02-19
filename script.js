@@ -4,19 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
     document.getElementById('canvas-container').appendChild(renderer.domElement);
 
     camera.position.z = 6;
-
-    // освещение
-    let light = new THREE.DirectionalLight(0xffffff, 1.5);
-    light.position.set(2, 3, 5);
-    light.castShadow = true;
-    scene.add(light);
-
-    let ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
 
     // загрузка модели
     let loader = new THREE.OBJLoader();
@@ -25,13 +15,10 @@ document.addEventListener("DOMContentLoaded", function () {
         function (object) {
             object.traverse(function (child) {
                 if (child instanceof THREE.Mesh) {
-                    child.material = new THREE.MeshStandardMaterial({
-                        color: 0x000000,
-                        roughness: 0.3,
-                        metalness: 0.1,
+                    child.material = new THREE.MeshBasicMaterial({
+                        color: 0x000000, // чистый черный цвет
+                        side: THREE.DoubleSide // рендерить обе стороны
                     });
-                    child.castShadow = true;
-                    child.receiveShadow = true;
                 }
             });
 
