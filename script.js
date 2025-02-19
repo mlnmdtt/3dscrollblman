@@ -9,19 +9,26 @@ document.addEventListener("DOMContentLoaded", function () {
     camera.position.z = 5;
 
     let loader = new THREE.OBJLoader();
-    loader.load("https://3dscrollblman.vercel.app/siluetforpayhipbg.obj", function (object) {
-    object.scale.set(8, 8, 8);
-    object.position.set(0, -2, -10);
-    scene.add(object);
+    let object;
+
+    loader.load("https://3dscrollblman.vercel.app/siluetforpayhipbg.obj", function (obj) {
+        object = obj;
+        object.scale.set(8, 8, 8);
+        object.position.set(0, -2, -10);
+        scene.add(object);
+        animate();
+    }, undefined, function (error) {
+        console.error("Ошибка загрузки модели:", error);
+    });
+
     function animate() {
         requestAnimationFrame(animate);
-        object.rotation.y = window.scrollY * 0.005;
+        if (object) {
+            let scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            object.rotation.y = scrollPercent * Math.PI * 2; // от 0 до 360° в радианах
+        }
         renderer.render(scene, camera);
     }
-    animate();
-}, undefined, function (error) {
-    console.error("Ошибка загрузки модели:", error);
-});
 
     window.addEventListener("resize", function () {
         camera.aspect = window.innerWidth / window.innerHeight;
