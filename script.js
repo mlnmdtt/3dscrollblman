@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loader.load("https://3dscrollblman.vercel.app/siluetforpayhipbg.obj", function (obj) {
         object = obj;
         object.scale.set(8, 8, 8);
-        object.position.set(0, -2, -10);
+        object.position.set(0, -1, -10); // Поднял модель (было -2, теперь -1)
         scene.add(object);
         animate();
     }, undefined, function (error) {
